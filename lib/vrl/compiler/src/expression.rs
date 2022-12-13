@@ -441,11 +441,12 @@ impl From<Value> for Expr {
     fn from(value: Value) -> Self {
         use std::collections::BTreeMap;
 
-        use value::Value::{Array, Boolean, Bytes, Float, Integer, Null, Object, Regex, Timestamp};
+        use value::Value::{Array, Boolean, Bytes, Float, Integer, UnsignedInteger, Null, Object, Regex, Timestamp};
 
         match value {
             Bytes(v) => Literal::from(v).into(),
             Integer(v) => Literal::from(v).into(),
+            UnsignedInteger(v) => Literal::from(v).into(),
             Float(v) => Literal::from(v).into(),
             Boolean(v) => Literal::from(v).into(),
             Object(v) => {

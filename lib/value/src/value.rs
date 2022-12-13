@@ -50,6 +50,9 @@ pub enum Value {
     /// Integer.
     Integer(i64),
 
+    /// UnsigendInteger,
+    UnsignedInteger(u64),
+
     /// Float - not NaN.
     Float(NotNan<f64>),
 
@@ -95,6 +98,7 @@ impl PartialEq<Self> for Value {
                 }
             }
             (Self::Integer(a), Self::Integer(b)) => a.eq(b),
+            (Self::UnsignedInteger(a), Self::UnsignedInteger(b)) => a.eq(b),
             (Self::Object(a), Self::Object(b)) => a.eq(b),
             (Self::Null, Self::Null) => true,
             (Self::Timestamp(a), Self::Timestamp(b)) => a.eq(b),
@@ -136,6 +140,9 @@ impl Hash for Value {
             Self::Integer(v) => {
                 v.hash(state);
             }
+            Self::UnsignedInteger(v) => {
+                v.hash(state);
+            }
             Self::Object(v) => {
                 v.hash(state);
             }
@@ -156,6 +163,7 @@ impl Value {
             Self::Bytes(_) | Self::Regex(_) => "string",
             Self::Timestamp(_) => "timestamp",
             Self::Integer(_) => "integer",
+            Self::UnsignedInteger(_) => "unsigned_integer",
             Self::Float(_) => "float",
             Self::Boolean(_) => "boolean",
             Self::Object(_) => "map",
@@ -211,6 +219,7 @@ impl Value {
             | Self::Timestamp(_)
             | Self::Float(_)
             | Self::Integer(_) => false,
+            | Self::UnsignedInteger(_) => false,
             Self::Null => true,
             Self::Object(v) => v.is_empty(),
             Self::Array(v) => v.is_empty(),

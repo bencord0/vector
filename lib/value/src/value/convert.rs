@@ -141,6 +141,7 @@ impl Value {
         match self {
             Self::Bytes(bytes) => Ok(bytes.clone()),
             Self::Integer(i) => Ok(Bytes::copy_from_slice(&i.to_le_bytes())),
+            Self::UnsignedInteger(u) => Ok(Bytes::copy_from_slice(&u.to_le_bytes())),
             Self::Float(f) => Ok(Bytes::copy_from_slice(&f.into_inner().to_le_bytes())),
             Self::Boolean(b) => Ok(if *b {
                 Bytes::copy_from_slice(&[1_u8])

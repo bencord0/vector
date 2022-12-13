@@ -27,6 +27,7 @@ pub struct Kind {
     // usage of the API easier to work with. There is no impact on the memory size of the type.
     bytes: Option<()>,
     integer: Option<()>,
+    unsigned_integer: Option<()>,
     float: Option<()>,
     boolean: Option<()>,
     timestamp: Option<()>,
@@ -60,6 +61,9 @@ impl std::fmt::Display for Kind {
         }
         if self.contains_integer() {
             kinds.push("integer");
+        }
+        if self.contains_unsigned_integer() {
+            kinds.push("unsigned_integer");
         }
         if self.contains_float() {
             kinds.push("float");
@@ -166,6 +170,7 @@ impl From<&Value> for Kind {
         match value {
             Value::Bytes(_) => Self::bytes(),
             Value::Integer(_) => Self::integer(),
+            Value::UnsignedInteger(_) => Self::unsigned_integer(),
             Value::Float(_) => Self::float(),
             Value::Boolean(_) => Self::boolean(),
             Value::Timestamp(_) => Self::timestamp(),

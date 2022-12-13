@@ -198,6 +198,7 @@ const fn type_id_for_value(val: &Value) -> TypeId {
         Value::Array(_) => 6,
         Value::Null => 7,
         Value::Regex(_) => 8,
+        Value::UnsignedInteger(_) => 9,
     }
 }
 

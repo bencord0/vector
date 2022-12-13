@@ -16,6 +16,7 @@ impl fmt::Display for Value {
                     .replace('\n', r#"\n"#)
             ),
             Self::Integer(val) => write!(f, "{}", val),
+            Self::UnsignedInteger(val) => write!(f, "{}", val),
             Self::Float(val) => write!(f, "{}", val),
             Self::Boolean(val) => write!(f, "{}", val),
             Self::Object(map) => {

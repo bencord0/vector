@@ -13,6 +13,7 @@ impl<'a> ToLua<'a> for Value {
                 .create_string(regex.as_bytes_slice())
                 .map(LuaValue::String),
             Self::Integer(i) => Ok(LuaValue::Integer(i)),
+            Self::UnsignedInteger(u) => u.to_lua(lua),
             Self::Float(f) => Ok(LuaValue::Number(f.into_inner())),
             Self::Boolean(b) => Ok(LuaValue::Boolean(b)),
             Self::Timestamp(t) => timestamp_to_table(lua, t).map(LuaValue::Table),

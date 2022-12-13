@@ -9,6 +9,7 @@ impl Kind {
     pub const fn is_any(&self) -> bool {
         self.contains_bytes()
             && self.contains_integer()
+            && self.contains_unsigned_integer()
             && self.contains_float()
             && self.contains_boolean()
             && self.contains_timestamp()
@@ -24,6 +25,7 @@ impl Kind {
     pub const fn is_json(&self) -> bool {
         self.contains_bytes()
             && self.contains_integer()
+            && self.contains_unsigned_integer()
             && self.contains_float()
             && self.contains_boolean()
             && !self.contains_timestamp()
@@ -43,6 +45,7 @@ impl Kind {
 
         !self.contains_bytes()
             && !self.contains_integer()
+            && !self.contains_unsigned_integer()
             && !self.contains_float()
             && !self.contains_boolean()
             && !self.contains_timestamp()
@@ -350,6 +353,12 @@ impl Kind {
     #[must_use]
     pub const fn contains_integer(&self) -> bool {
         self.integer.is_some() || self.is_never()
+    }
+
+    /// Returns `true` if the type is _at least_ `unsigned integer`.
+    #[must_use]
+    pub const fn contains_unsigned_integer(&self) -> bool {
+        self.unsigned_integer.is_some() || self.is_never()
     }
 
     /// Returns `true` if the type is _at least_ `float`.

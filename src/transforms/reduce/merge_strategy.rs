@@ -336,12 +336,19 @@ impl ReduceValueMerger for TimestampWindowMerger {
 #[derive(Debug, Clone)]
 enum NumberMergerValue {
     Int(i64),
+    UInt(u64),
     Float(NotNan<f64>),
 }
 
 impl From<i64> for NumberMergerValue {
     fn from(v: i64) -> Self {
         NumberMergerValue::Int(v)
+    }
+}
+
+impl From<u64> for NumberMergerValue {
+    fn from(v: u64) -> Self {
+        NumberMergerValue::UInt(v)
     }
 }
 
@@ -369,12 +376,14 @@ impl ReduceValueMerger for AddNumbersMerger {
         match v {
             Value::Integer(i) => match self.v {
                 NumberMergerValue::Int(j) => self.v = NumberMergerValue::Int(i + j),
+                NumberMergerValue::UInt(j) => self.v = NumberMergerValue::Int(i + j as i64),
                 NumberMergerValue::Float(j) => {
                     self.v = NumberMergerValue::Float(NotNan::new(i as f64).unwrap() + j)
                 }
             },
             Value::Float(f) => match self.v {
                 NumberMergerValue::Int(j) => self.v = NumberMergerValue::Float(f + j as f64),
+                NumberMergerValue::UInt(j) => self.v = NumberMergerValue::Float(f + j as f64),
                 NumberMergerValue::Float(j) => self.v = NumberMergerValue::Float(f + j),
             },
             _ => {
@@ -391,6 +400,7 @@ impl ReduceValueMerger for AddNumbersMerger {
         match self.v {
             NumberMergerValue::Float(f) => v.insert(k.as_str(), Value::Float(f)),
             NumberMergerValue::Int(i) => v.insert(k.as_str(), Value::Integer(i)),
+            NumberMergerValue::UInt(u) => v.insert(k.as_str(), Value::UnsignedInteger(u)),
         };
         Ok(())
     }
@@ -419,6 +429,11 @@ impl ReduceValueMerger for MaxNumberMerger {
                             self.v = NumberMergerValue::Int(i);
                         }
                     }
+                    NumberMergerValue::UInt(u2) => {
+                        if i > u2 as i64 {
+                            self.v = NumberMergerValue::Int(i);
+                        }
+                    }
                     NumberMergerValue::Float(f2) => {
                         let f = NotNan::new(i as f64).unwrap();
                         if f > f2 {
@@ -430,6 +445,7 @@ impl ReduceValueMerger for MaxNumberMerger {
             Value::Float(f) => {
                 let f2 = match self.v {
                     NumberMergerValue::Int(i2) => NotNan::new(i2 as f64).unwrap(),
+                    NumberMergerValue::UInt(u2) => NotNan::new(u2 as f64).unwrap(),
                     NumberMergerValue::Float(f2) => f2,
                 };
                 if f > f2 {
@@ -450,6 +466,7 @@ impl ReduceValueMerger for MaxNumberMerger {
         match self.v {
             NumberMergerValue::Float(f) => v.insert(k.as_str(), Value::Float(f)),
             NumberMergerValue::Int(i) => v.insert(k.as_str(), Value::Integer(i)),
+            NumberMergerValue::UInt(u) => v.insert(k.as_str(), Value::UnsignedInteger(u)),
         };
         Ok(())
     }
@@ -478,6 +495,12 @@ impl ReduceValueMerger for MinNumberMerger {
                             self.v = NumberMergerValue::Int(i);
                         }
                     }
+                    NumberMergerValue::UInt(u2) => {
+                        // XXX: Probably want to use try_into() and catch the overflow
+                        if i < u2 as i64 {
+                            self.v = NumberMergerValue::Int(i);
+                        }
+                    }
                     NumberMergerValue::Float(f2) => {
                         let f = NotNan::new(i as f64).unwrap();
                         if f < f2 {
@@ -489,6 +512,7 @@ impl ReduceValueMerger for MinNumberMerger {
             Value::Float(f) => {
                 let f2 = match self.v {
                     NumberMergerValue::Int(i2) => NotNan::new(i2 as f64).unwrap(),
+                    NumberMergerValue::UInt(u2) => NotNan::new(u2 as f64).unwrap(),
                     NumberMergerValue::Float(f2) => f2,
                 };
                 if f < f2 {
@@ -509,6 +533,7 @@ impl ReduceValueMerger for MinNumberMerger {
         match self.v {
             NumberMergerValue::Float(f) => v.insert(k.as_str(), Value::Float(f)),
             NumberMergerValue::Int(i) => v.insert(k.as_str(), Value::Integer(i)),
+            NumberMergerValue::UInt(u) => v.insert(k.as_str(), Value::UnsignedInteger(u)),
         };
         Ok(())
     }
@@ -523,6 +548,7 @@ impl From<Value> for Box<dyn ReduceValueMerger> {
     fn from(v: Value) -> Self {
         match v {
             Value::Integer(i) => Box::new(AddNumbersMerger::new(i.into())),
+            Value::UnsignedInteger(u) => Box::new(AddNumbersMerger::new(u.into())),
             Value::Float(f) => Box::new(AddNumbersMerger::new(f.into())),
             Value::Timestamp(ts) => Box::new(TimestampWindowMerger::new(ts)),
             Value::Object(_) => Box::new(DiscardMerger::new(v)),
@@ -542,6 +568,7 @@ pub(crate) fn get_value_merger(
     match m {
         MergeStrategy::Sum => match v {
             Value::Integer(i) => Ok(Box::new(AddNumbersMerger::new(i.into()))),
+            Value::UnsignedInteger(u) => Ok(Box::new(AddNumbersMerger::new(u.into()))),
             Value::Float(f) => Ok(Box::new(AddNumbersMerger::new(f.into()))),
             _ => Err(format!(
                 "expected number value, found: '{}'",
@@ -550,6 +577,7 @@ pub(crate) fn get_value_merger(
         },
         MergeStrategy::Max => match v {
             Value::Integer(i) => Ok(Box::new(MaxNumberMerger::new(i.into()))),
+            Value::UnsignedInteger(u) => Ok(Box::new(MaxNumberMerger::new(u.into()))),
             Value::Float(f) => Ok(Box::new(MaxNumberMerger::new(f.into()))),
             _ => Err(format!(
                 "expected number value, found: '{}'",
@@ -558,6 +586,7 @@ pub(crate) fn get_value_merger(
         },
         MergeStrategy::Min => match v {
             Value::Integer(i) => Ok(Box::new(MinNumberMerger::new(i.into()))),
+            Value::UnsignedInteger(u) => Ok(Box::new(MinNumberMerger::new(u.into()))),
             Value::Float(f) => Ok(Box::new(MinNumberMerger::new(f.into()))),
             _ => Err(format!(
                 "expected number value, found: '{}'",

@@ -11,6 +11,7 @@ impl Kind {
         Self {
             bytes: Some(()),
             integer: Some(()),
+            unsigned_integer: Some(()),
             float: Some(()),
             boolean: Some(()),
             timestamp: Some(()),
@@ -31,6 +32,7 @@ impl Kind {
         Self {
             bytes: Some(()),
             integer: Some(()),
+            unsigned_integer: Some(()),
             float: Some(()),
             boolean: Some(()),
             timestamp: None,
@@ -48,6 +50,7 @@ impl Kind {
         Self {
             bytes: Some(()),
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -65,6 +68,25 @@ impl Kind {
         Self {
             bytes: None,
             integer: Some(()),
+            unsigned_integer: None,
+            float: None,
+            boolean: None,
+            timestamp: None,
+            regex: None,
+            null: None,
+            undefined: None,
+            array: None,
+            object: None,
+        }
+    }
+
+    /// The "unsigned_integer" type state.
+    #[must_use]
+    pub const fn unsigned_integer() -> Self {
+        Self {
+            bytes: None,
+            integer: None,
+            unsigned_integer: Some(()),
             float: None,
             boolean: None,
             timestamp: None,
@@ -82,6 +104,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: Some(()),
             boolean: None,
             timestamp: None,
@@ -99,6 +122,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: Some(()),
             timestamp: None,
@@ -116,6 +140,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: Some(()),
@@ -133,6 +158,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -150,6 +176,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -167,6 +194,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -184,6 +212,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -201,6 +230,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,
@@ -218,6 +248,7 @@ impl Kind {
         Self {
             bytes: None,
             integer: None,
+            unsigned_integer: None,
             float: None,
             boolean: None,
             timestamp: None,

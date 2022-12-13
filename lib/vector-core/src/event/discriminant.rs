@@ -124,6 +124,7 @@ fn hash_value<H: Hasher>(hasher: &mut H, value: &Value) {
         Value::Regex(val) => val.as_bytes_slice().hash(hasher),
         Value::Boolean(val) => val.hash(hasher),
         Value::Integer(val) => val.hash(hasher),
+        Value::UnsignedInteger(val) => val.hash(hasher),
         Value::Timestamp(val) => val.hash(hasher),
         // Non-trivial.
         Value::Float(val) => hash_f64(hasher, val.into_inner()),

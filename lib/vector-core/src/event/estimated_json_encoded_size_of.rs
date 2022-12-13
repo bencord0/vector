@@ -75,6 +75,7 @@ impl EstimatedJsonEncodedSizeOf for Value {
             Value::Bytes(v) => v.estimated_json_encoded_size_of(),
             Value::Regex(v) => v.as_str().estimated_json_encoded_size_of(),
             Value::Integer(v) => v.estimated_json_encoded_size_of(),
+            Value::UnsignedInteger(v) => v.estimated_json_encoded_size_of(),
             Value::Float(v) => v.estimated_json_encoded_size_of(),
             Value::Boolean(v) => v.estimated_json_encoded_size_of(),
             Value::Null => NULL_SIZE,

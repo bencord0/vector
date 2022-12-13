@@ -16,6 +16,7 @@ impl Value {
             Self::Regex(regex) => regex.as_bytes(),
             Self::Timestamp(timestamp) => Bytes::from(timestamp_to_string(timestamp)),
             Self::Integer(num) => Bytes::from(num.to_string()),
+            Self::UnsignedInteger(num) => Bytes::from(num.to_string()),
             Self::Float(num) => Bytes::from(num.to_string()),
             Self::Boolean(b) => Bytes::from(b.to_string()),
             Self::Object(map) => {
@@ -35,6 +36,7 @@ impl Value {
             Self::Regex(regex) => regex.as_str().into(),
             Self::Timestamp(timestamp) => timestamp_to_string(timestamp).into(),
             Self::Integer(num) => num.to_string().into(),
+            Self::UnsignedInteger(num) => num.to_string().into(),
             Self::Float(num) => num.to_string().into(),
             Self::Boolean(b) => b.to_string().into(),
             Self::Object(map) => serde_json::to_string(map)
@@ -55,6 +57,7 @@ impl Serialize for Value {
     {
         match &self {
             Self::Integer(i) => serializer.serialize_i64(*i),
+            Self::UnsignedInteger(i) => serializer.serialize_u64(*i),
             Self::Float(f) => serializer.serialize_f64(f.into_inner()),
             Self::Boolean(b) => serializer.serialize_bool(*b),
             Self::Bytes(b) => serializer.serialize_str(String::from_utf8_lossy(b).as_ref()),
@@ -204,6 +207,7 @@ impl TryInto<serde_json::Value> for Value {
         match self {
             Self::Boolean(v) => Ok(serde_json::Value::from(v)),
             Self::Integer(v) => Ok(serde_json::Value::from(v)),
+            Self::UnsignedInteger(v) => Ok(serde_json::Value::from(v)),
             Self::Float(v) => Ok(serde_json::Value::from(v.into_inner())),
             Self::Bytes(v) => Ok(serde_json::Value::from(String::from_utf8(v.to_vec())?)),
             Self::Regex(regex) => Ok(serde_json::Value::from(regex.as_str().to_string())),

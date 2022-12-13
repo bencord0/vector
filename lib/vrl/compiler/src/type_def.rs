@@ -133,6 +133,19 @@ impl TypeDef {
 
     #[inline]
     #[must_use]
+    pub fn unsigned_integer() -> Self {
+        Kind::unsigned_integer().into()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn or_unsigned_integer(mut self) -> Self {
+        self.kind.add_unsigned_integer();
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn float() -> Self {
         Kind::float().into()
     }

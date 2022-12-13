@@ -210,6 +210,8 @@ mod parse_grok;
 mod parse_groks;
 #[cfg(feature = "parse_int")]
 mod parse_int;
+#[cfg(feature = "parse_uint")]
+mod parse_uint;
 #[cfg(feature = "parse_json")]
 mod parse_json;
 #[cfg(feature = "parse_key_value")]
@@ -493,6 +495,8 @@ pub use parse_grok::ParseGrok;
 pub use parse_groks::ParseGroks;
 #[cfg(feature = "parse_int")]
 pub use parse_int::ParseInt;
+#[cfg(feature = "parse_uint")]
+pub use parse_uint::ParseUInt;
 #[cfg(feature = "parse_json")]
 pub use parse_json::ParseJson;
 #[cfg(feature = "parse_key_value")]
@@ -792,6 +796,8 @@ pub fn all() -> Vec<Box<dyn vrl::Function>> {
         Box::new(ParseGroks),
         #[cfg(feature = "parse_int")]
         Box::new(ParseInt),
+        #[cfg(feature = "parse_uint")]
+        Box::new(ParseUInt),
         #[cfg(feature = "parse_json")]
         Box::new(ParseJson),
         #[cfg(feature = "parse_key_value")]

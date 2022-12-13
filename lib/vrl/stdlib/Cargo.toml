@@ -160,6 +160,7 @@ default = [
     "parse_grok",
     "parse_groks",
     "parse_int",
+    "parse_uint",
     "parse_json",
     "parse_key_value",
     "parse_klog",
@@ -306,6 +307,7 @@ parse_glog = ["dep:chrono", "dep:once_cell", "dep:regex"]
 parse_grok = ["dep:grok"]
 parse_groks = ["dep:grok", "dep:datadog-grok"]
 parse_int = []
+parse_uint = []
 parse_json = ["dep:serde_json", "value/json"]
 parse_key_value = ["dep:nom"]
 parse_klog = ["dep:chrono", "dep:once_cell", "dep:regex"]

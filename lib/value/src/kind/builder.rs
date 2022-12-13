@@ -356,6 +356,13 @@ impl Kind {
         self.integer.replace(()).is_none()
     }
 
+    /// Add the `unsigned_integer` state to the type.
+    ///
+    /// If the type alread included this state, the function returns `false`.
+    pub fn add_unsigned_integer(&mut self) -> bool {
+        self.integer.replace(()).is_none()
+    }
+
     /// Add the `float` state to the type.
     ///
     /// If the type already included this state, the function returns `false`.
